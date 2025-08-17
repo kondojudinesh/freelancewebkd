@@ -1,7 +1,7 @@
 // ✅ Final Gigs.tsx connected to backend API instead of mockData
 
 import { useEffect, useState } from 'react';
-import API from '../utils/api';
+import API from '../utilis/api';
 import GigCard from '../components/gig/GigCard';
 import Button from '../components/common/Button';
 import { Filter, Grid, List } from 'lucide-react';
