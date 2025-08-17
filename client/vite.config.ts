@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ['lucide-react'], // keep this if you want lucide-react to be excluded
   },
 });
