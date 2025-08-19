@@ -11,7 +11,7 @@ import Signup from "./pages/Signup";
 import Gigs from "./pages/Gigs";
 import CreateGig from "./pages/CreateGig"; // if you already have
 import Dashboard from "./pages/Dashboard"; // if you already have
-import ProtectedRoute from "./utils/ProtectedRoute"; // new file you'll create
+import ProtectedRoute from "./utilis/ProtectedRoute"; // new file you'll create
 
 function App() {
   return (
