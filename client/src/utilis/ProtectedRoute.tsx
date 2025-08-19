@@ -7,7 +7,18 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const session = supabase.auth.getSession();
+  const [session, setSession] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+    });
+  }, []);
+
+  if (session === null) {
+    // Still loading, show nothing or a loader
+    return null;
+  }
 
   if (!session) {
     return <Navigate to="/login" replace />;
