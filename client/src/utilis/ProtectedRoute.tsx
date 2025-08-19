@@ -1,23 +1,19 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabaseClient";
 
-const ProtectedRoute = ({
-  children,
-  role,
-}: {
-  children: JSX.Element;
-  role?: string;
-}) => {
-  const { user } = useAuth();
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
 
-  if (!user) return <Navigate to="/login" />;
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const session = supabase.auth.getSession();
 
-  // If role is passed, check against user metadata
-  if (role && user.user_metadata.role !== role) {
-    return <Navigate to="/" />;
+  if (!session) {
+    return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
