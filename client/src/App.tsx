@@ -1,37 +1,58 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import CreateGig from "./pages/CreateGig";
-import Gigs from "./pages/Gigs";
+import { ThemeProvider } from "./context/ThemeContext";
+import { Toaster } from "react-hot-toast";
+
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
-
-// ✅ added
-import { Toaster } from "react-hot-toast";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Gigs from "./pages/Gigs";
+import CreateGig from "./pages/CreateGig"; // if you already have
+import Dashboard from "./pages/Dashboard"; // if you already have
+import ProtectedRoute from "./utils/ProtectedRoute"; // new file you'll create
 
 function App() {
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/create-gig" element={<CreateGig />} />
-            <Route path="/gigs" element={<Gigs />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/gigs" element={<Gigs />} />
 
-      {/* ✅ Toast notifications container */}
-      <Toaster position="top-right" reverseOrder={false} />
-    </Router>
+              {/* Example: Freelancer-only page */}
+              <Route
+                path="/create-gig"
+                element={
+                  <ProtectedRoute role="freelancer">
+                    <CreateGig />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Example: Any logged-in user */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </main>
+          <Footer />
+          {/* Notifications */}
+          <Toaster position="top-center" />
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 
