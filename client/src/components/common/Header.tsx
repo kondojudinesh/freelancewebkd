@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Search, Menu, X, Sun, Moon, MessageCircle, User } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
-import Button from './Button';
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Search, Menu, X, Sun, Moon } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext"; // ✅ use AuthContext
+import Button from "./Button";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth(); // ✅ get user & logout
   const location = useLocation();
-  const isLoggedIn = false; // Mock login state
 
   const navLinks = [
-    { name: 'Gigs', path: '/gigs' },
-    { name: 'Messages', path: '/messages' },
-    { name: 'Dashboard', path: '/dashboard' }
+    { name: "Gigs", path: "/gigs" },
+    { name: "Messages", path: "/messages" },
+    { name: "Dashboard", path: "/dashboard" },
   ];
 
   return (
@@ -26,7 +27,9 @@ const Header: React.FC = () => {
             <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">F</span>
             </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white">FreeLance</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
+              FreeLance
+            </span>
           </Link>
 
           {/* Search Bar - Hidden on mobile */}
@@ -49,43 +52,65 @@ const Header: React.FC = () => {
                 to={link.path}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   location.pathname === link.path
-                    ? 'text-orange-500'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-orange-500'
+                    ? "text-orange-500"
+                    : "text-gray-600 dark:text-gray-300 hover:text-orange-500"
                 }`}
               >
                 {link.name}
               </Link>
             ))}
-            
+
+            {/* Dark / Light toggle */}
             <button
               onClick={toggleTheme}
               className="p-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 transition-colors"
             >
-              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+              {theme === "light" ? (
+                <Moon className="w-5 h-5" />
+              ) : (
+                <Sun className="w-5 h-5" />
+              )}
             </button>
 
-            {isLoggedIn ? (
+            {/* ✅ Authenticated User Menu */}
+            {user ? (
               <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <img
-                    src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150"
+                    src={`https://ui-avatars.com/api/?name=${
+                      user.user_metadata?.full_name || "User"
+                    }&background=orange&color=fff`}
                     alt="Profile"
                     className="w-8 h-8 rounded-full"
                   />
                 </button>
-                
+
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-                    <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
                       Dashboard
                     </Link>
-                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      Profile
-                    </Link>
-                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+
+                    {/* Extra menu for freelancers */}
+                    {user.user_metadata?.role === "freelancer" && (
+                      <Link
+                        to="/creategig"
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        Create Gig
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={logout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
                       Logout
                     </button>
                   </div>
@@ -94,7 +119,9 @@ const Header: React.FC = () => {
             ) : (
               <div className="flex items-center space-x-2">
                 <Link to="/login">
-                  <Button variant="ghost" size="sm">Login</Button>
+                  <Button variant="ghost" size="sm">
+                    Login
+                  </Button>
                 </Link>
                 <Link to="/signup">
                   <Button size="sm">Join</Button>
@@ -135,21 +162,23 @@ const Header: React.FC = () => {
                   to={link.path}
                   className={`px-3 py-2 text-sm font-medium transition-colors ${
                     location.pathname === link.path
-                      ? 'text-orange-500'
-                      : 'text-gray-600 dark:text-gray-300'
+                      ? "text-orange-500"
+                      : "text-gray-600 dark:text-gray-300"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
                 </Link>
               ))}
-              
+
               <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex items-center space-x-2">
-                  {!isLoggedIn && (
+                  {!user && (
                     <>
                       <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                        <Button variant="ghost" size="sm">Login</Button>
+                        <Button variant="ghost" size="sm">
+                          Login
+                        </Button>
                       </Link>
                       <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
                         <Button size="sm">Join</Button>
@@ -161,7 +190,11 @@ const Header: React.FC = () => {
                   onClick={toggleTheme}
                   className="p-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 transition-colors"
                 >
-                  {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                  {theme === "light" ? (
+                    <Moon className="w-5 h-5" />
+                  ) : (
+                    <Sun className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
