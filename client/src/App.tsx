@@ -1,32 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
-import Header from './components/common/Header';
-import Footer from './components/common/Footer';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Gigs from './pages/Gigs';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import CreateGig from "./pages/CreateGig";
+import Gigs from "./pages/Gigs";
+import { Toaster } from "react-hot-toast";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <ThemeProvider>
-      <Router>
-        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
-          <Header />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/gigs" element={<Gigs />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </ThemeProvider>
+    <Router>
+      {/* Toast notification system */}
+      <Toaster position="top-right" reverseOrder={false} />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create-gig" element={<CreateGig />} />
+        <Route path="/gigs" element={<Gigs />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
